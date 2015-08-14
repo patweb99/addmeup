@@ -16,7 +16,7 @@ recieve_message_handler = function( request, response ) {
 		// done receiving data
 		request.on('end', function () {
 			var message = JSON.parse( body );
-			debug('prod')("Message body received:", JSON.parse( body ) );
+			debug( 'prod' )( "MESSAGE FROM PRODUCER:\n", JSON.parse( body ) );
 
 			try {
 				Consumer.push( JSON.parse( body ), function( error, results ) {
@@ -26,6 +26,7 @@ recieve_message_handler = function( request, response ) {
 						error.status = 500;
 						next( error );
 					} else {
+						debug( 'prod' )( 'SENDING TO PRODUCER:\n', results )
 						response.end( JSON.stringify( results ) );
 					}
 				});

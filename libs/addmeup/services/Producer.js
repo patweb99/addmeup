@@ -1,4 +1,4 @@
-var dev 	= require('debug')('dev'),
+var debug 	= require('debug'),
 	async 	= require('async'),
 	uuid	= require('node-uuid');
 
@@ -9,7 +9,7 @@ function Producer( name ) {
 		name = uuid.v1()
 	}
 
-	dev( "Producer Created with name: " + name )
+	debug('dev')( "Producer Created with name: " + name )
 	this.name = name;
 }
 

@@ -26,8 +26,7 @@ function iterator( producer, callback ){
 function makeRequest( message, callback ){
 
 	// log details
-	debug( 'prod' )( 'Sending message to Consumer', message );
-	debug( 'dev' )( 'Sending message to Consumer', message );
+	debug( 'prod' )( 'SENDING TO CONSUMER:\n', message );
 	
 	// options for making the POST request
 	var options = {
@@ -46,7 +45,7 @@ function makeRequest( message, callback ){
 
 		response.on('end', function () {
 			// process response
-			debug( 'prod' )( 'Consumer Response: ' + str );
+			debug( 'prod' )( 'CONSUMER RESPONSE:\n' + str );
 			
 		});
 	}

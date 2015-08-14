@@ -1,9 +1,11 @@
-var debug = require('debug'),
-	async = require('async');
+var debug 	= require('debug'),
+	async 	= require('async'),
+	_self_;
 
 function Consumer() {
-	this.queue = async.queue(this.run,10);
-	this.queue.drain = this.drain;
+	_self_ = this;
+	_self_.queue = async.queue(this.run,10);
+	_self_.queue.drain = _self_.drain;
 }
 
 Consumer.prototype.run = function( message, callback ) {
@@ -21,10 +23,10 @@ Consumer.prototype.run = function( message, callback ) {
 		int2 		= expression_to_arr[2];
 
 	// wrap up the results
-	message['equals'] = this.evaluate_expression( int1, operator, int2 );
+	message['equals'] = _self_.evaluate_expression( int1, operator, int2 );
 
 	// generate the results to send back (simple string)
-	debug('prod')( "Expression processed by Consumer", message )
+	debug('debug')( "Expression processed by Consumer", message )
 
 	return async.ensureAsync( callback( null, message ) );
 }
@@ -34,14 +36,14 @@ Consumer.prototype.evaluate_expression = function( int1, operator, int2 ) {
 }
 
 Consumer.prototype.push = function( message, callback ) {
-	debug( 'prod' )( "Pushing item into queue: ", message );
+	debug( 'debug' )( "Pushing item into queue: ", message );
 	// push the message into the queue
-	return this.queue.push( message, callback );
+	return _self_.queue.push( message, callback );
 }
 
 Consumer.prototype.drain = function() {
-	if ( this.queue.length() == 0 ) {
-		debug( 'prod' )( "The queue is now empty" );
+	if ( _self_.queue.length() == 0 ) {
+		debug( 'debug' )( "The queue is now empty" );
 	}
 }
 
