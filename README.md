@@ -30,6 +30,11 @@ Include Unit tests
 
 This is very simple implementation. Nothing fancy to show the desired outcome.
 
+## Install libs
+```bash
+ $ npm i
+```
+
 ## Running tests
 ```bash
  $ npm test
