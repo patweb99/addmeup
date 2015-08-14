@@ -1,5 +1,6 @@
 # addmeup
 Simple Generator/Evaluator/Producer/Consumer System that sends a series of random arithmetic expression for evaluation
+[![Build Status](https://travis-ci.org/patweb99/addmeup.svg)](https://travis-ci.org/patweb99/addmeup)
 
 Challenge: Full-Stack
 
