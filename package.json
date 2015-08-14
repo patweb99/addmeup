@@ -1,0 +1,26 @@
+{
+  "name": "addmeup_producer_consumer_exercise",
+  "author": "Patrick Santora <patweb99@gmail.com>",
+  "license": "MIT",
+  "version": "0.0.1",
+  "description": "Simple Generator/Evaluator/Producer/Consumer System that sends a series of random arithmetic expression for evaluation.",
+  "main": "server.js",
+  "scripts": {
+    "producer": "DEBUG='prod' node ./server_producer.js",
+    "consumer": "DEBUG='prod' node ./server_consumer.js",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/patweb99/addmeup.git"
+  },
+  "devDependencies": {
+      "chai": "3.2.0",
+      "mocha": "2.2.5"
+  },
+  "dependencies": {
+      "debug": "2.2.0",
+      "async": "1.4.2",
+      "node-uuid": "1.4.3"
+   }
+}
