@@ -25,10 +25,16 @@ function iterator( producer, callback ){
 	});
 }
 
-function makeRequest( message, callback ){
+/** 
+ * The makeRequest function is in charge of handling requests 
+ * from the consumer 
+ * @param {string} body - JSON body (message) from producer
+ * @param {function} callback - Callback
+ */
+function makeRequest( body, callback ){
 
 	// log details
-	debug( 'prod' )( 'SENDING TO CONSUMER:\n', message );
+	debug( 'prod' )( 'SENDING TO CONSUMER:\n', body );
 	
 	// options for making the POST request
 	var options = {
@@ -57,7 +63,7 @@ function makeRequest( message, callback ){
 	req.on( 'error', function( error ) {
 		debug( 'prod' )( 'An error has occurredL', error )
 	});
-	req.write( JSON.stringify( message ) )
+	req.write( JSON.stringify( body ) )
 	req.end()
 
 }
@@ -77,8 +83,12 @@ setInterval( function() {
 	});
 }, 10);
 
-// handler to receive incoming messages from Consumer
-recieve_message_handler = function( request, response ) {
+/** 
+ * Handler to receive incoming messages from Consumer
+ * @param {object} request - Request object
+ * @param {object} response - Response object
+ */
+ recieve_message_handler = function( request, response ) {
 	// only process POST requests
 	if ( request.method == 'POST' ) {
 

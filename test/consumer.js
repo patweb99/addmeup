@@ -3,7 +3,7 @@ var assert = require("assert"),
 	Consumer = require('../libs/addmeup/services/Consumer');
 
 describe('Consumer', function() {
-	describe('#compute()', function () {
+	describe('#run()', function () {
 		it('should compute and return the correct mathematical result for the each expression it receives', function () {
 
 			// get a random expression

@@ -6,6 +6,12 @@ var debug			= require('debug'),
 	CONSUMER_PORT	= process.env.CONSUMER_PORT || 3000,
 	PRODUCER_PORT 	= process.env.PRODUCER_PORT || 4000;
 
+/** 
+ * The processRequest function is in charge of handling requests 
+ * from the producer 
+ * @param {string} body - JSON body (message) from producer
+ * @param {function} callback - Callback
+ */
 function processRequest( body, callback ){
 
 	// call consumer
@@ -17,7 +23,7 @@ function processRequest( body, callback ){
 			error.status = 500;
 		} else {
 
-			debug('prod')( 'SENDING MESSAGE BACK TO PRODUCER: ', results )
+			debug( 'prod' )( 'SENDING MESSAGE BACK TO PRODUCER: ', results )
 
 			// MAKE POST REQUEST BACK TO PRODUCER
 			// options for making the POST request
@@ -54,7 +60,11 @@ function processRequest( body, callback ){
 
 }
 
-// handler to receive incoming messages from Generator
+/** 
+ * Handler to receive incoming messages from Generator
+ * @param {object} request - Request object
+ * @param {object} response - Response object
+ */
 recieve_message_handler = function( request, response ) {
 	// only process POST requests
 	if ( request.method == 'POST' ) {
