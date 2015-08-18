@@ -1,7 +1,58 @@
 var debug			= require('debug'),
+	async 			= require('async'),
 	http			= require('http'),
 	Consumer 		= require('./libs/addmeup/services/Consumer'),
-	port 			= process.argv[2] || 3000;
+	Agent 			= require('agentkeepalive'),
+	CONSUMER_PORT	= process.env.CONSUMER_PORT || 3000,
+	PRODUCER_PORT 	= process.env.PRODUCER_PORT || 4000;
+
+function processRequest( body, callback ){
+
+	// call consumer
+	async.ensureAsync( Consumer.push( body, function( error, results ) {
+
+		// if there is an error then we throw a status 500
+		if ( error ) {
+			debug('prod')( 'An error has occurred', error );
+			error.status = 500;
+		} else {
+
+			debug('prod')( 'SENDING MESSAGE BACK TO PRODUCER: ', results )
+
+			// MAKE POST REQUEST BACK TO PRODUCER
+			// options for making the POST request
+			var options = {
+				host: 'localhost',
+				path: '/',
+				port: PRODUCER_PORT,
+				method: 'POST'
+			};
+
+			// create callback
+			req_callback = function(response) {
+				var str = ''
+				response.on('data', function (chunk) {
+					str += chunk;
+				});
+
+				response.on('end', function () {
+					debug('prod')('end')
+					callback( null, null)
+				});
+			}
+
+			// attempt to make request
+			var req = http.request(options, req_callback);
+			req.on( 'error', function( error ) {
+				debug( 'prod' )( 'An error has occurredL', error )
+			});
+			req.write( JSON.stringify( body ) )
+			req.end()
+			
+		}
+	}));
+
+}
 
 // handler to receive incoming messages from Generator
 recieve_message_handler = function( request, response ) {
@@ -19,17 +70,10 @@ recieve_message_handler = function( request, response ) {
 			debug( 'prod' )( "MESSAGE FROM PRODUCER:\n", JSON.parse( body ) );
 
 			try {
-				Consumer.push( JSON.parse( body ), function( error, results ) {
-					// if there is an error then we throw a status 500
-					if ( error ) {
-						debug('prod')( 'An error has occurred', error );
-						error.status = 500;
-						next( error );
-					} else {
-						debug( 'prod' )( 'SENDING TO PRODUCER:\n', results )
-						response.end( JSON.stringify( results ) );
-					}
-				});
+				processRequest( message, function( error, results ) {
+					debug('prod')( 'REQUEST FROM PRODUCER WAS PROCESSED' )
+					response.end( "" );
+				})
 			} catch ( e ) {
 				debug( 'prod' )( 'An error occurred:', e )
 			}
@@ -38,6 +82,6 @@ recieve_message_handler = function( request, response ) {
 }
 
 // start the web server
-http.createServer( recieve_message_handler ).listen( port, function() {
-	debug( 'prod' )( 'Consumer running on port %d', port );
+http.createServer( recieve_message_handler ).listen( CONSUMER_PORT, function() {
+	debug( 'prod' )( 'Consumer running on port %d', CONSUMER_PORT );
 });

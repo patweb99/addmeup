@@ -1,9 +1,11 @@
-var debug		= require('debug'),
-	async 		= require('async'),
-	http		= require('http'),
-	Producer	= require('./libs/addmeup/services/Producer'),
-	uuid		= require('node-uuid'),
-	PORT		= process.env.PORT || 3000;
+var debug			= require('debug'),
+	async 			= require('async'),
+	http			= require('http'),
+	Producer		= require('./libs/addmeup/services/Producer'),
+	uuid			= require('node-uuid'),
+	Agent 			= require('agentkeepalive'),
+	CONSUMER_PORT	= process.env.CONSUMER_PORT || 3000,
+	PRODUCER_PORT 	= process.env.PRODUCER_PORT || 4000;
 
 // create producers
 // we are hardcoding 2 producers for now as that's all that's required.
@@ -32,8 +34,8 @@ function makeRequest( message, callback ){
 	var options = {
 		host: 'localhost',
 		path: '/',
-		port: PORT,
-		method: 'POST'
+		port: CONSUMER_PORT,
+		method: 'POST' 
 	};
 
 	// create callback
@@ -73,4 +75,27 @@ setInterval( function() {
 		// log that the producer produced something
 		debug( 'dev' )( 'Produced:', result );
 	});
-}, 1000);
+}, 10);
+
+// handler to receive incoming messages from Consumer
+recieve_message_handler = function( request, response ) {
+	// only process POST requests
+	if ( request.method == 'POST' ) {
+
+		var body = '';
+		// start receiving data
+		request.on('data', function (data) {
+			body += data;
+		});
+		// done receiving data
+		request.on('end', function () {
+			var message = JSON.parse( body );
+			debug( 'prod' )( "MESSAGE FROM CONSUMER:", JSON.parse( body ) );
+			response.end()
+		});
+	}
+}
+
+http.createServer( recieve_message_handler ).listen( PRODUCER_PORT, function() {
+	debug( 'prod' )( 'Consumer running on port %d', PRODUCER_PORT );
+});
