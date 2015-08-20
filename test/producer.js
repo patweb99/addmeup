@@ -8,7 +8,7 @@ describe('Producer', function() {
     	// get a random expression
     	// allowed method to accept a range 1 to 1000 with operator + to assist with randomization
       producer = new Producer();
-      producer.create(1, 1000, function( error, results ) {
+      producer.create(1, 1000, ['+'], function( error, results ) {
         var regex = /^([0-9]+)\+[0-9]+\=$/
         assert.equal( results['expression'].toString().match(regex) instanceof Array, true )
       })

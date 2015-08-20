@@ -9,7 +9,7 @@ describe('Consumer', function() {
 			// get a random expression
 			// allowed method to accept a range 1 to 1000 with operator + to assist with randomization
 			producer = new Producer();
-			producer.create(0, 9, function( error, results ) {
+			producer.create(0, 9, ["+"], function( error, results ) {
 				expression_arr = results['expression'].toString().split( '' )
 				Consumer.run( results, function( error, results ) {
 					assert.equal( results['equals'], eval( expression_arr[0] + expression_arr[1] + expression_arr[2] ) )

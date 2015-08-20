@@ -20,7 +20,8 @@ function triggerProducers(callback){
 }
 
 function iterator( producer, callback ){
-	return producer.create( 0, 9, function( error, message ) {
+	// NOTE: Add operators array argument to assist with building random expressions
+	return producer.create( 1, 2000, ["+","-","/","*"], function( error, message ) {
 		return makeRequest( message, callback );
 	});
 }

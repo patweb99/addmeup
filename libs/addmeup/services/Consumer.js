@@ -24,13 +24,26 @@ Consumer.prototype.run = function( message, callback ) {
 	producer_id = message.producer_id;
 	// get expression
 	expression = message.expression;
-	// break out the expression into an array of elements
-	expression_to_arr = expression.split('');
 	
-	// separate out the expression attributes
-	var int1 		= expression_to_arr[0],
-		operator 	= expression_to_arr[1],
-		int2 		= expression_to_arr[2];
+	// NOTE: Added regex to break apart expression
+	match_regex = /(\d+)([\+\-\/\*])(\d+)(\=)/
+	// break out the expression into an array of elements
+	// 	old: expression_to_arr = expression.split('');
+	expression_to_arr = expression.match( match_regex );
+	
+	// NOTE: Added check expression
+	if ( expression_to_arr ===null )
+		throw "Non-expression passed. Should be in format of \"number+number=\""
+
+	// NOTE: separate out the expression attributes
+	// OLD
+	// var int1 	= expression_to_arr[0],
+	//	operator 	= expression_to_arr[1],
+	//	int2 		= expression_to_arr[2];
+	// NEW
+	var int1 		= expression_to_arr[1],
+		operator 	= expression_to_arr[2],
+		int2 		= expression_to_arr[3];
 
 	// wrap up the results
 	message['equals'] = _self_.evaluate_expression( int1, operator, int2 );
